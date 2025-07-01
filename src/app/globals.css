@@ -24,3 +24,34 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Utilidades personalizadas para truncar texto */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Estilo para hover en las tarjetas */
+.group:hover .group-hover\:scale-105 {
+  transform: scale(1.05);
+}
+
+/* Aspect ratio para videos */
+.aspect-video {
+  aspect-ratio: 16 / 9;
+}
+
+/* Mejora para las imágenes responsivas */
+img {
+  max-width: 100%;
+  height: auto;
+}
