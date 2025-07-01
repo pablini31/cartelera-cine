@@ -1,7 +1,9 @@
-import { MovieCard } from '@/components/MovieCard';
+import { MovieGrid } from '@/components/MovieGrid';
 import { type Movie } from '@/lib/tmdb';
 
-const genres = {
+type GenreId = 28 | 12 | 16 | 35 | 80 | 99 | 18 | 10751 | 14 | 36 | 27 | 10402 | 9648 | 10749 | 878 | 10770 | 53 | 10752 | 37;
+
+const genres: Record<GenreId, string> = {
   28: 'Acción',
   12: 'Aventura',
   16: 'Animación',
@@ -48,8 +50,17 @@ async function getMoviesByGenre(genreId: string): Promise<Movie[]> {
 }
 
 export default async function GenrePage({ params }: PageProps) {
-  const movies = await getMoviesByGenre(params.id);
-  const genreName = genres[params.id as keyof typeof genres] || 'Género Desconocido';
+  // Asegurar que params sea un objeto y tenga la propiedad id
+  const id = params?.id || '';
+  
+  const movies = await getMoviesByGenre(id);
+  const genreId = parseInt(id, 10);
+  const genreName = genreId in genres ? genres[genreId as GenreId] : 'Género Desconocido';
+  
+  // Filtrar películas duplicadas basadas en el ID
+  const uniqueMovies = movies.filter(
+    (movie, index, self) => index === self.findIndex(m => m.id === movie.id)
+  );
 
   return (
     <main className="container mx-auto px-4 py-8">
@@ -57,17 +68,10 @@ export default async function GenrePage({ params }: PageProps) {
         Películas de {genreName}
       </h1>
       
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-        {movies.map((movie) => (
-          <MovieCard key={movie.id} movie={movie} />
-        ))}
-      </div>
-
-      {movies.length === 0 && (
-        <p className="text-center text-gray-600 dark:text-gray-400">
-          No se encontraron películas para este género.
-        </p>
-      )}
+      <MovieGrid 
+        movies={uniqueMovies} 
+        emptyMessage={`No se encontraron películas para el género ${genreName}.`}
+      />
     </main>
   );
 } 
